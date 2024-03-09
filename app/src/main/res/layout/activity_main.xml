@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:layout_margin="20dp"
+    android:orientation="vertical" >
+    <!--
+    <fragment android:id="@+id/nav_host_fragment"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:defaultNavHost="true"
+    app:navGraph="@navigation/nav_graph" />
+    -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="124dp"
+        android:contentDescription="BS210"
+        app:srcCompat="@drawable/maxresdefault"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/buttonSelectDevice"
+        android:layout_width="198dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonOdeslat"
+        android:layout_marginTop="16dp"
+        android:onClick="selectBluetoothDevice"
+        android:text="Vybrat zařízení" />
+
+    <TextView
+    android:id="@+id/textView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Příkaz pro IBIS"
+    tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/editTextPrikaz"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="Zde zadej přikaz pro IBIS"
+        android:inputType="text"
+        android:minHeight="74dp"
+        android:text="xC0"
+        tools:ignore="HardcodedText" />
+
+<Button
+    android:id="@+id/buttonVypocitej"
+    android:layout_width="202dp"
+    android:layout_height="wrap_content"
+    android:text="Vypočítej Payload"
+    tools:ignore="HardcodedText" />
+
+<TextView
+    android:id="@+id/textViewPayload"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Vypočítaný Payload k odeslání"
+    tools:ignore="HardcodedText" />
+
+<TextView
+    android:id="@+id/textPyload"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/editTextAdresa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Bluetooth Address"
+        android:inputType="text"
+        android:text="00:1A:2B:3C:4D:5E" />
+
+    <Button
+        android:id="@+id/buttonOdeslat"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="Odeslat na displej"
+        tools:ignore="HardcodedText" />
+
+</LinearLayout>
+
