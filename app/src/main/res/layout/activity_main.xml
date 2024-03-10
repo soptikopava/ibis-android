@@ -97,6 +97,13 @@
         android:text="Odeslat na displej"
         tools:ignore="HardcodedText" />
 
+    <TextView
+        android:id="@+id/textViewConnectionStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stav připojení: Nepřipojeno"
+        />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="15dp" />

@@ -18,14 +18,13 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     companion object {
@@ -38,17 +37,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var payloadTv: TextView
     private lateinit var adresa: EditText
     private var bluetoothManager: MyBluetoothManager? = null
-
-    private val pickBluetoothDevice = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val deviceAddress = data?.getStringExtra("device_address")
-            // Zde pracujte s adresou vybraného Bluetooth zařízení
-            Toast.makeText(this, "Vybráno zařízení s adresou: $deviceAddress", Toast.LENGTH_SHORT).show()
-        }
-    }
+    //val bluetoothManager = MyBluetoothManager(this, selectedDevice.address)
+    private lateinit var connectionStatus: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         buttonVypocitej = findViewById(R.id.buttonVypocitej)
@@ -76,7 +67,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             insets
         }
         // Připojení k Bluetooth zařízení
-        initBluetoothManager()
+        // initBluetoothManager()
         bluetoothManager?.connect()
         // Nastavení posluchačů tlačítek
         buttonVypocitej.setOnClickListener(this)
@@ -97,27 +88,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 buttonOdeslat.isEnabled = s?.isNotBlank() == true
             }
         })
+        connectionStatus = findViewById(R.id.textViewConnectionStatus)
     }
     private fun initBluetoothManager() {
         adresa = findViewById(R.id.editTextAdresa)
 
         // Zkontrolovat, zda bluetoothManager je null
         if (bluetoothManager == null) {
-            val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-            val bluetoothAdapter = bluetoothManager.adapter
+            val bluetoothManagerService = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+            val bluetoothAdapter = bluetoothManagerService.adapter
 
             if (bluetoothAdapter == null) {
                 // Pokud není Bluetooth adaptér dostupný na zařízení
                 Toast.makeText(this, "Bluetooth adaptér není dostupný na tomto zařízení.", Toast.LENGTH_SHORT).show()
                 finish()
             } else {
-                val deviceAddress = adresa.text.toString() // Předpokládám, že adresa je řetězec
-                val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-                val bluetoothAdapter = bluetoothManager.adapter
-                if (bluetoothAdapter != null) {
-                    val bluetoothManager: MyBluetoothManager? = null
-                    bluetoothManager?.connect()
-                }
+                bluetoothManager = MyBluetoothManager(this, adresa.text.toString())
+                bluetoothManager?.connect()
             }
         }
     }
@@ -128,30 +115,39 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-
         Log.d("MainActivity", "onClick called")
-        var payload = ""
-        val pr = prikaz
-        val hexResult = textToHex(pr.text.toString())
-
         when (v?.id) {
             R.id.buttonVypocitej -> {
+                var payload = ""
+                val pr = prikaz
+                val hexResult = textToHex(pr.text.toString())
                 payload = hexResult
                 payloadTv.text = payload
+                // Kontrola hodnoty payload před přiřazením do payloadTv
+                Log.d("MainActivity", "Prikaz:    ${pr.text.toString()}")
+                Log.d("MainActivity", "Payload:   $payload")
             }
             R.id.buttonOdeslat -> {
-                val deviceAddress = adresa.text.toString()
-                val payload = prikaz.text.toString()
+                // Kontrola, zda je Bluetooth zařízení připojeno
+                if (bluetoothManager?.isConnected() == false) {
+                    initBluetoothManager() // Inicializace a pokus o připojení k Bluetooth zařízení
+                }
+
+                val payload = payloadTv.text.toString()
+                // Kontrola hodnoty payload před přiřazením do payloadTv
+                Log.d("MainActivity", "Payload:   $payload")
 
                 if (payload.isEmpty()) {
                     Toast.makeText(this, "Nelze odeslat prázdný payload.", Toast.LENGTH_SHORT).show()
                 } else {
-                    // Kontrola, zda je Bluetooth zařízení připojeno
                     if (bluetoothManager?.isConnected() == true) {
                         bluetoothManager?.odeslatNaDisplej(payload)
-                        bluetoothManager?.disconnect()
+                        connectionStatus.text = "Stav připojení: Připojeno"
+                        connectionStatus.setTextColor(ContextCompat.getColor(this, R.color.green)) // Zelená barva pro "Připojeno"
                     } else {
                         Toast.makeText(this, "Bluetooth zařízení není připojeno.", Toast.LENGTH_SHORT).show()
+                        connectionStatus.text = "Stav připojení: Nepřipojeno"
+                        connectionStatus.setTextColor(ContextCompat.getColor(this, R.color.red)) // Červená barva pro "Nepřipojeno"
                     }
                 }
                 // Uložení hodnoty editTextAdresa do SharedPreferences
@@ -164,23 +160,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 showBluetoothDevicePicker()
             }
         }
-
-        // Kontrola hodnoty payload před přiřazením do payloadTv
-        Log.d("MainActivity", "Prikaz:    ${pr.text.toString()}")
-        Log.d("MainActivity", "Payload:   $payload")
     }
 
     private fun showBluetoothDevicePicker() {
-        val bluetoothManager: BluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-
+        //val bluetoothManager: BluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        //val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+        val bluetoothAdapter = getBluetoothAdapter()
         if (bluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth není dostupný na tomto zařízení.", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (!bluetoothAdapter.isEnabled) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            //val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             if (ActivityCompat.checkSelfPermission(
                     this,
                     Manifest.permission.BLUETOOTH_CONNECT
