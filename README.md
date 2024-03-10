@@ -1,10 +1,13 @@
 # ibis-android
 Ovládání displejů dopravního systému IBIS pomocí Bluetooth v mobilní aplikaci pro Android. Zejména pak displeje DOT-LED, MATRIX, FLIP-FLOP apod. Například BS210. Lze provést změnu čísla Linky, zastávky, vlastní texty apod.
+
+Beta verze ke stažení zde: https://github.com/soptikopava/ibis-android/releases/tag/v1.0.0-beta
+
 Aplikace podporuje světlé i tmavé téma. Minimální verze Android je verze 12. Screenshot aktuální verze aplikace:
 
 <div>
 <img src="1710027836653.jpg" width="300" align="middle"  hspace="20"/>
-<img src="ibib-android_v1l.jpg" width="300" align="middle"/  hspace="20">
+<img src="ibib-android_v1l.jpg" width="300" align="middle"  hspace="20"/>
 </div>
 
 V aplikaci lze vybrat Bluetooth zařízení, na které je pak možné poslat datovou větu (tzv. payload). Ten se tvoří z příkazu IBIS. Payload pak obsahuje na předposledním pozici symbol pro návratový vozík "CR" a kontrolní součet.
