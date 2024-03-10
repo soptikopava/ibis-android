@@ -62,6 +62,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         buttonSelectDevice.setOnClickListener(this)
 
         enableEdgeToEdge()
+
+        // Načtení hodnoty editTextAdresa z SharedPreferences
+        val sharedPref = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        val deviceAddress = sharedPref.getString("deviceAddress", "00:00:00:00:00:00")
+        adresa.setText(deviceAddress)
+
         checkBluetoothPermissions()
 
         this.payloadTv = findViewById(R.id.textPyload)
@@ -140,11 +146,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (payload.isEmpty()) {
                     Toast.makeText(this, "Nelze odeslat prázdný payload.", Toast.LENGTH_SHORT).show()
                 } else {
-                    val bluetoothManager = MyBluetoothManager(deviceAddress)
-                    bluetoothManager.connect()
-                    bluetoothManager.odeslatNaDisplej(payload)
-                    bluetoothManager.disconnect()
+                    // Kontrola, zda je Bluetooth zařízení připojeno
+                    if (bluetoothManager?.isConnected() == true) {
+                        bluetoothManager?.odeslatNaDisplej(payload)
+                        bluetoothManager?.disconnect()
+                    } else {
+                        Toast.makeText(this, "Bluetooth zařízení není připojeno.", Toast.LENGTH_SHORT).show()
+                    }
                 }
+                // Uložení hodnoty editTextAdresa do SharedPreferences
+                val sharedPref = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                editor.putString("deviceAddress", adresa.text.toString())
+                editor.apply()
             }
             R.id.buttonSelectDevice -> {
                 showBluetoothDevicePicker()

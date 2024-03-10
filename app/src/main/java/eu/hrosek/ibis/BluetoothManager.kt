@@ -25,6 +25,9 @@ class MyBluetoothManager(private val deviceAddress: String) {
 
         outputStream = bluetoothSocket?.outputStream
     }
+    fun isConnected(): Boolean {
+        return bluetoothSocket?.isConnected == true
+    }
 
     fun vypocitejPayload(): String {
         // Váš kód pro výpočet payload
