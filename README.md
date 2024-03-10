@@ -22,5 +22,5 @@ Ukázka TTL sběrnice displeje BS210 a komunikační LED, které signalizují to
 ![Sběrnice a komunikační LED na základní desce BS210:](1710027836691.jpg)
 
 Takto by to jednou mohlo vypadat:
-![Obrázek nalezený na internetu, než jej nahradím něčím jiným](maxresdefault.jpg) Zdroj obrázku: intenret
+![Obrázek nalezený na internetu, než jej nahradím něčím jiným](maxresdefault.jpg) Zdroj obrázku: internet
 
