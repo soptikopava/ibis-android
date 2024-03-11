@@ -58,6 +58,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val sharedPref = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
         val deviceAddress = sharedPref.getString("deviceAddress", "00:00:00:00:00:00")
         adresa.setText(deviceAddress)
+        // Načtení hodnoty příkazu z SharedPreferences
+        val savedCommand = sharedPref.getString("prikaz", "xC0")
+        prikaz.setText(savedCommand)
 
         checkBluetoothPermissions()
 
@@ -66,10 +69,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        // Připojení k Bluetooth zařízení
-        // initBluetoothManager()
-        bluetoothManager?.connect()
-        // Nastavení posluchačů tlačítek
+
+        // Načtení hodnoty payloadu z SharedPreferences
+        val savedPayload = sharedPref.getString("payload", "")
+        payloadTv.text = savedPayload
+
         buttonVypocitej.setOnClickListener(this)
         buttonOdeslat.setOnClickListener(this)
 
@@ -86,6 +90,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             override fun afterTextChanged(s: Editable?) {
                 // Zde sledujeme změny v poli a povolíme nebo zakážeme tlačítko "Odeslat na displej"
                 buttonOdeslat.isEnabled = s?.isNotBlank() == true
+                // Převedení adresy na velká písmena a odstranění mezer
+                val cleanedAddress = s?.toString()?.uppercase()?.replace(" ", "")
+                if (cleanedAddress != null && cleanedAddress != s.toString()) {
+                    adresa.setText(cleanedAddress)
+                    adresa.setSelection(cleanedAddress.length) // Nastaví kurzor na konec textu
+                }
             }
         })
         connectionStatus = findViewById(R.id.textViewConnectionStatus)
@@ -118,28 +128,32 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         Log.d("MainActivity", "onClick called")
         when (v?.id) {
             R.id.buttonVypocitej -> {
-                var payload = ""
                 val pr = prikaz
                 val hexResult = textToHex(pr.text.toString())
-                payload = hexResult
+                val payload = hexResult
                 payloadTv.text = payload
-                // Kontrola hodnoty payload před přiřazením do payloadTv
-                Log.d("MainActivity", "Prikaz:    ${pr.text.toString()}")
-                Log.d("MainActivity", "Payload:   $payload")
+                // Uložení hodnoty editTextPrikaz do SharedPreferences
+                val sharedPref = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                editor.putString("prikaz", pr.text.toString())
+                editor.apply()
+                // Uložení hodnoty payloadu do SharedPreferences
+                editor.putString("payload", payload)
+                editor.apply()
             }
             R.id.buttonOdeslat -> {
                 // Kontrola, zda je Bluetooth zařízení připojeno
                 if (bluetoothManager?.isConnected() == false) {
                     initBluetoothManager() // Inicializace a pokus o připojení k Bluetooth zařízení
                 }
-
                 val payload = payloadTv.text.toString()
                 // Kontrola hodnoty payload před přiřazením do payloadTv
                 Log.d("MainActivity", "Payload:   $payload")
-
+                initBluetoothManager()
                 if (payload.isEmpty()) {
                     Toast.makeText(this, "Nelze odeslat prázdný payload.", Toast.LENGTH_SHORT).show()
                 } else {
+
                     if (bluetoothManager?.isConnected() == true) {
                         bluetoothManager?.odeslatNaDisplej(payload)
                         connectionStatus.text = "Stav připojení: Připojeno"
@@ -215,16 +229,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode == Activity.RESULT_OK) {
-                // Uživatel zapnul Bluetooth, můžete pokračovat s výběrem zařízení
-                showBluetoothDevicePicker()
-            } else {
-                Toast.makeText(this, "Bluetooth je potřeba zapnout pro výběr zařízení.", Toast.LENGTH_SHORT).show()
-            }
+    private val enableBluetoothResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // Uživatel zapnul Bluetooth, můžete pokračovat s výběrem zařízení
+            showBluetoothDevicePicker()
+        } else {
+            Toast.makeText(this, "Bluetooth je potřeba zapnout pro výběr zařízení.", Toast.LENGTH_SHORT).show()
         }
     }
     override fun onDestroy() {
@@ -249,14 +259,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         if (missingPermissions.isNotEmpty()) {
             ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), REQUEST_BLUETOOTH_PERMISSIONS)
-        }
-    }
-
-    private val enableBluetoothResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // Bluetooth was enabled by the user, continue with your logic here
-        } else {
-            // The user did not enable Bluetooth or an error occurred
         }
     }
 

@@ -1,14 +1,11 @@
 package eu.hrosek.ibis
 
-import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
-import androidx.core.content.ContextCompat
 import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
@@ -22,16 +19,8 @@ class MyBluetoothManager(private val context: Context, private val deviceAddress
     private var outputStream: OutputStream? = null
 
     fun connect() {
-        // Kontrola oprávnění pro Bluetooth
-        val hasBluetoothPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
-        if (!hasBluetoothPermission) {
-            // Požádejte uživatele o udělení oprávnění
-            // ...
-            return
-        }
-
         val device: BluetoothDevice? = bluetoothAdapter?.getRemoteDevice(deviceAddress)
-
+        Log.d("connect", "Device: $device")
         // UUID pro SPP (Serial Port Profile)
         val uuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
@@ -54,11 +43,12 @@ class MyBluetoothManager(private val context: Context, private val deviceAddress
     }
 
     fun odeslatNaDisplej(payload: String) {
+        Log.d("odeslatNaDisplej", "Payload:   $payload")
         try {
             outputStream?.write(payload.toByteArray())
-            Log.d("BluetoothManager", "Payload úspěšně odeslán: $payload")
+            Log.d("odeslatNaDisplej", "Payload úspěšně odeslán: $payload")
         } catch (e: Exception) {
-            Log.e("BluetoothManager", "Chyba při odesílání payloadu: ${e.message}")
+            Log.e("odeslatNaDisplej", "Chyba při odesílání payloadu: ${e.message}")
         }
     }
 
