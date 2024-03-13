@@ -5,24 +5,32 @@ Beta verze ke stažení zde: https://github.com/soptikopava/ibis-android/release
 
 Aplikace podporuje světlé i tmavé téma. Minimální verze Android je verze 12. Screenshot aktuální verze aplikace:
 
+
 <div>
 <img src="1710027836653.jpg" width="300" align="middle"  hspace="20"/>
 <img src="ibib-android_v1l.jpg" width="300" align="middle"  hspace="20"/>
 </div>
 
+
 V aplikaci lze vybrat Bluetooth zařízení, na které je pak možné poslat datovou větu (tzv. payload). Ten se tvoří z příkazu IBIS. Payload pak obsahuje na předposledním pozici symbol pro návratový vozík "CR" a kontrolní součet.
 Stiskem tlačítka Odešli na displej se otevře sériová komunikace pomocí Bluetooth a payload se odešle přímo do sběrnice - v našem případě pomocí TTL přímo na piny procesoru.
+Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-06, který je modernější verzi staré HC-05, viz obr. vlevo. Bezdrátové moduly používají větčinou 3.3V logiku. K dipleji lze také připojit obyčejný TTL USB převodník s čipem Prolific 2303 nebo CH340, viz obr. vpravo. Tyto převodníky používají 5V logiku. S tímto převodníkem můžeme připojit displej přímo USB kabelem do PC, aniž bychom potřebovali další součástky. Je to nejsnadnější cesta jak komunikovat s displejem v kombinaci s programem BSLoader.exe
 
-Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-06, který je modernější verzi staré HC-05.
-
-<img src="1710027836666.jpg" width="400"/>
+<div>
+<img src="1710027836666.jpg" width="400" align="middle"  hspace="20"/>
+<img src="IMG_20240310_185015.jpg" width="400" align="middle"  hspace="20"/>
+</div>
 
 
 Ukázka připojení bezdrátového modulu přímo na TTL sběrnici k procesoru displeje BS210:
-![Připojení k základní desce displeje BS210:](1710027836679.jpg)
+<img src="1710027836679.jpg"  align="middle"/>
+
+
 
 Ukázka TTL sběrnice displeje BS210 a komunikační LED, které signalizují tok dat Rx, Tx aj.
 ![Sběrnice a komunikační LED na základní desce BS210:](1710027836691.jpg)
+
+
 
 Takto by to jednou mohlo vypadat:
 ![Obrázek nalezený na internetu, než jej nahradím něčím jiným](maxresdefault.jpg) Zdroj obrázku: internet
