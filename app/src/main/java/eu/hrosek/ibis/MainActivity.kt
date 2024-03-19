@@ -18,7 +18,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val deviceAddress = sharedPref.getString("deviceAddress", "00:00:00:00:00:00")
         adresa.setText(deviceAddress)
         // Načtení hodnoty příkazu z SharedPreferences
-        val savedCommand = sharedPref.getString("prikaz", "xC0")
+        val savedCommand = sharedPref.getString("prikaz", "z000")
         prikaz.setText(savedCommand)
         checkBluetoothPermissions()
 
