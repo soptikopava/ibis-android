@@ -123,6 +123,5 @@
             android:autoLink="web"
             android:text="https://github.com/soptikopava/ibis-android" />
     </FrameLayout>
-
 </LinearLayout>
 

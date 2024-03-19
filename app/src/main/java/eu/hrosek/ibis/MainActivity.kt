@@ -18,6 +18,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -61,7 +62,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Načtení hodnoty příkazu z SharedPreferences
         val savedCommand = sharedPref.getString("prikaz", "xC0")
         prikaz.setText(savedCommand)
-
         checkBluetoothPermissions()
 
         this.payloadTv = findViewById(R.id.textPyload)
@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Načtení hodnoty payloadu z SharedPreferences
         val savedPayload = sharedPref.getString("payload", "")
         payloadTv.text = savedPayload
-
         buttonVypocitej.setOnClickListener(this)
         buttonOdeslat.setOnClickListener(this)
 
@@ -186,7 +185,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         if (!bluetoothAdapter.isEnabled) {
-            //val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             if (ActivityCompat.checkSelfPermission(
                     this,
                     Manifest.permission.BLUETOOTH_CONNECT
@@ -227,7 +225,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val dialog = builder.create()
         dialog.show()
     }
-
 
     private val enableBluetoothResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {

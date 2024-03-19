@@ -14,7 +14,6 @@ class MyBluetoothManager(private val context: Context, private val deviceAddress
 
     private val bluetoothManager: BluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-
     private var bluetoothSocket: BluetoothSocket? = null
     private var outputStream: OutputStream? = null
 
