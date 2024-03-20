@@ -1,9 +1,9 @@
 <p class="markdown-heading" dir="auto">
-  <img src="https://camo.githubusercontent.com/55c3be8b5692ac891d01cd59a6cf681e3cf0f8e7334e06d5ed2a69c103791c06/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c616e6775616765732f746f702f636f7274696e69636f2f6b6f746c696e2d616e64726f69642d74656d706c6174653f636f6c6f723d626c7565266c6f676f3d6b6f746c696e" alt="Language" data-canonical-src="https://img.shields.io/github/languages/top/cortinico/kotlin-android-template?color=blue&amp;logo=kotlin" style="max-width: 100%;">
-   <a href="https://android-arsenal.com/api?level=31" rel="nofollow"><img alt="API" src="https://camo.githubusercontent.com/0eda703da08220e08354f624a3fc0023f10416a302565c69c3759bf6e0800d40/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4150492d32312532422d627269676874677265656e2e7376673f7374796c653d666c6174" data-canonical-src="https://img.shields.io/badge/API-31%2B-brightgreen.svg?style=flat" style="max-width: 100%;">
+  <img src="https://img.shields.io/github/languages/top/cortinico/kotlin-android-template?color=blue&amp;logo=kotlin" style="max-width: 100%;">
+   <a href="https://android-arsenal.com/api?level=31" rel="nofollow"><img alt="API" src="https://img.shields.io/badge/API-31%2B-brightgreen.svg?style=flat" style="max-width: 100%;">
    </a>
    <img src="https://github.com/cortinico/kotlin-android-template/workflows/Pre%20Merge%20Checks/badge.svg" alt="Pre Merge Checks" style="max-width: 100%;">
-   <img src="https://camo.githubusercontent.com/796cf4deba8b007685ec9d110ada43bf49df8450c5732b82e692baf8df003df7/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6963656e73652f636f7274696e69636f2f6b6f746c696e2d616e64726f69642d74656d706c6174652e737667" alt="License" data-canonical-src="https://img.shields.io/github/license/cortinico/kotlin-android-template.svg" style="max-width: 100%;">
+   <img src="https://img.shields.io/github/license/cortinico/kotlin-android-template.svg" style="max-width: 100%;">
 </p>
 
 # ibis-android
