@@ -38,22 +38,23 @@ Stiskem tlačítka `Odešlat na displej` se otevře sériová komunikace pomocí
 
 ## Popis hardware
 ### Minulost
-Abych zjistitl, jak komunikace funguje, byl mi doporučen převodník z RS232 na IBIS, který použáví 24V logiku HTL. HTL používá vždy dva signálové vodiče, kde každý z nich má vlastní odděllenou zem. Protože RS232 má obráceno logiku, proto musí mít převodník na HTL invertor, který obrací logickou  a převodník 1 na 0 a 0 na 1. Přišlo mi to až moc komplikované pro můj projekt. Proto jsem se rozhodl, že základní desku displeje prozkoumám podobněji. Zjistil jsem, že vstupy ze svorkovnice IBIS vedou na dělící člen, asi optočlen, který převádí 24V na nižší napětí a zároveň chrání I/O procesoru proti přepětí. Bylo tedy jasné, že nejpravděpodobněji do procesoru bude přivedena logika TTL. S multimetrem jsem si ověřil, že se jedná o 5V logiku. Při měření jsem našel na zákadní desce měřící body. Ty používají servisní technici, aby odhalili příčinu závady. Využít tyto měřící body bylo více než příhodné. Vyhrabal jsem ze šuplíku převodník z USB na TTL Prolific PL2303 v ceně cca 35 Kč. A ejhle, fungovalo to jak s programem IBISUtil tak BSLoader.
-(zde bude popis měřících bodů)
+Abych zjistitl, jak komunikace funguje, byl mi doporučen převodník z RS232 na IBIS, který použáví 24V logiku HTL. HTL používá vždy dva signálové vodiče, kde každý z nich má vlastní odděllenou zem. Protože RS232 má obráceno logiku, proto musí mít převodník na HTL invertor, který obrací logickou  a převodník 1 na 0 a 0 na 1. Přišlo mi to až moc komplikované pro můj projekt. Proto jsem se rozhodl, že základní desku displeje prozkoumám podobněji. Zjistil jsem, že vstupy ze svorkovnice IBIS vedou na dělící člen, asi optočlen, který převádí 24V na nižší napětí a zároveň chrání I/O procesoru proti přepětí. Bylo tedy jasné, že nejpravděpodobněji do procesoru bude přivedena logika TTL. S multimetrem jsem si ověřil, že se jedná o 5V logiku. Další součástka před procesorem je klopný obvod 74HC74. JEdná se klopný obvod, který je zapojen jako invertor logických hodnot a přávě převádí logickou 1 na 0 a logickou 0 na 1. Převádí tak běžnou komunikaci RS232 na TTL. Tímto skláním poctu vývojářím - je to chytré a jednoduché řešení. Při měření jsem našel na zákadní desce měřící body. Tyto body používají servisní technici, aby odhalili příčinu závady, když se jim na stůl dostane vadná deska. Využít tyto měřící body bylo více než příhodné. Vyhrabal jsem ze šuplíku převodník z USB na TTL Prolific PL2303 v ceně cca 35 Kč. A ejhle, fungovalo to jak s programem IBISUtil tak BSLoader.
+
 Cílem tohoto projektu však není připojit displej k USB počítače bez složitých převodníků a kabelů. Cílem je ovládat displej bezdrátově skrze blouetooth v mobilu nebo tabletu.
+<p> </p>
+Ukázka zapojení použítého převodníku TTL na USB přímo do PC:
+<img src="IMG_20240310_185015.jpg" width="300" align="middle"  hspace="20"/>
 
 ### Součastnost
 Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-06, který je modernější verzi staré HC-05, viz obr. vlevo. Bezdrátové moduly používají větčinou 3.3V logiku. K dipleji lze také připojit obyčejný TTL USB převodník s čipem Prolific 2303 nebo CH340, viz obr. vpravo. Tyto převodníky používají 5V logiku. S tímto převodníkem můžeme připojit displej přímo USB kabelem do PC, aniž bychom potřebovali další součástky. Je to nejsnadnější cesta jak komunikovat s displejem v kombinaci s programem BSLoader.exe
 
-<div>
-<img src="1710027836666.jpg" width="400" align="middle"  hspace="20"/>
-<img src="IMG_20240310_185015.jpg" width="400" align="middle"  hspace="20"/>
-</div>
+<p> </p>
+  Ukázaka zapojení HC-06 k displeji:
+  <img src="1710027836666.jpg" width="300" align="middle"  hspace="20"/>
 
-
+<p> </p>
 Ukázka připojení bezdrátového modulu přímo na TTL sběrnici k procesoru displeje BS210:
 <img src="1710027836679.jpg"  align="middle"/>
-
 
 
 Ukázka TTL sběrnice displeje BS210 a komunikační LED, které signalizují tok dat Rx, Tx aj.
