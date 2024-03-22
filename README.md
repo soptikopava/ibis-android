@@ -33,20 +33,38 @@ Pro instalaci aplikace potřebujete zařízení se systémem Android verze 12 ne
 * Protože bluetooth modul používá logiku 3.3V a displej 5V, potřebujeme rezistory buď 3 kusy 10 kOhm, nebo 1 kus 10 kOhm + 1 kus 20 kOhm. Prostě takové, co najdete v šuplíku nejčastěji. Pomocí rezistorů vytvoříme dělič napětí a přizpůsobíme tak použitou logiku na správnou hodnotu.
 (Zde obrázek zapojení rezisorů jako dělič napětí.)
 ## Popis software
-V aplikaci lze vybrat Bluetooth zařízení, na které je pak možné poslat datovou větu (tzv. payload). Ten se tvoří z příkazu IBIS. Payload pak obsahuje na předposledním pozici symbol pro návratový vozík "CR" a kontrolní součet.
+V aplikaci lze vybrat Bluetooth zařízení, na které je pak možné poslat datovou větu (tzv. payload). Ten se tvoří z příkazu IBIS. Payload pak obsahuje na předposledním pozici symbol pro návratový vozík `CR` a kontrolní součet.
 Stiskem tlačítka `Odešlat na displej` se otevře sériová komunikace pomocí Bluetooth s displejem a payload se odešle přímo do sběrnice - v našem případě pomocí TTL přímo na piny procesoru.
 
 ## Popis hardware
-### Minulost
-Abych zjistitl, jak komunikace funguje, byl mi doporučen převodník z RS232 na IBIS, který použáví 24V logiku HTL. HTL používá vždy dva signálové vodiče, kde každý z nich má vlastní odděllenou zem. Protože RS232 má obráceno logiku, proto musí mít převodník na HTL invertor, který obrací logickou  a převodník 1 na 0 a 0 na 1. Přišlo mi to až moc komplikované pro můj projekt. Proto jsem se rozhodl, že základní desku displeje prozkoumám podobněji. Zjistil jsem, že vstupy ze svorkovnice IBIS vedou na dělící člen, asi optočlen, který převádí 24V na nižší napětí a zároveň chrání I/O procesoru proti přepětí. Bylo tedy jasné, že nejpravděpodobněji do procesoru bude přivedena logika TTL. S multimetrem jsem si ověřil, že se jedná o 5V logiku. Další součástka před procesorem je klopný obvod 74HC74. JEdná se klopný obvod, který je zapojen jako invertor logických hodnot a přávě převádí logickou 1 na 0 a logickou 0 na 1. Převádí tak běžnou komunikaci RS232 na TTL. Tímto skláním poctu vývojářím - je to chytré a jednoduché řešení. Při měření jsem našel na zákadní desce měřící body. Tyto body používají servisní technici, aby odhalili příčinu závady, když se jim na stůl dostane vadná deska. Využít tyto měřící body bylo více než příhodné. Vyhrabal jsem ze šuplíku převodník z USB na TTL Prolific PL2303 v ceně cca 35 Kč. A ejhle, fungovalo to jak s programem IBISUtil tak BSLoader.
+Dovolte mi trochu zabrousit do popisu, jak jsem na to přišel.
+### Díl 1. - Minulost ve znamení TTL
+Abych zjistitl, jak komunikace funguje, byl mi doporučen převodník z RS232 na IBIS, který použáví 24V logiku HTL. HTL používá vždy dva signálové vodiče, kde každý z nich má vlastní odděllenou zem. Protože RS232 má obráceno logiku, proto musí mít převodník na HTL invertor, který obrací logickou  a převodník 1 na 0 a 0 na 1. Přišlo mi to až moc komplikované pro můj projekt. Proto jsem se rozhodl, že základní desku displeje prozkoumám podobněji. Zjistil jsem, že vstupy ze svorkovnice IBIS vedou na dělící člen, asi optočlen, který převádí 24V na nižší napětí a zároveň chrání další součástky proti přepětí. Bylo tedy jasné, že nejpravděpodobněji do procesoru bude přivedena logika TTL. S multimetrem jsem si ověřil, že se jedná o 5V logiku. Další součástka před procesorem je Schmittův obvod 74HC14D. Tento obvod zvyšuje napětí z dělících členů na logické úrovně 0V a 5V. Zárověň se snaží odstranit drobné rušení na vedení a skládá signál tak, aby měly logické 0 a 1 ostrou hranu a šly lépe rozpoznat. Při měření jsem našel na zákadní desce měřící body. Tyto body používají servisní technici, aby odhalili příčinu závady, když se jim na stůl dostane vadná deska. Využít tyto měřící body bylo více než příhodné. Vyhrabal jsem ze šuplíku převodník z USB na TTL Prolific PL2303 v ceně cca 35 Kč. A ejhle, fungovalo to jak s programem IBISUtil tak BSLoader.
 
-Cílem tohoto projektu však není připojit displej k USB počítače bez složitých převodníků a kabelů. Cílem je ovládat displej bezdrátově skrze blouetooth v mobilu nebo tabletu.
+Ukázka TTL sběrnice displeje BS210 a komunikační LED, které signalizují tok dat Rx, Tx aj.
+![Sběrnice a komunikační LED na základní desce BS210:](1710027836691.jpg)
 <p> </p>
 Ukázka zapojení použítého převodníku TTL na USB přímo do PC:
 <img src="IMG_20240310_185015.jpg" width="300" align="middle"  hspace="20"/>
 
+Cílem tohoto projektu však není připojit displej k USB počítače bez složitých převodníků a kabelů. Cílem je ovládat displej bezdrátově skrze blouetooth v mobilu nebo tabletu.
+### Díl 2. - Minulost ve znamení komunikace
+Probram IBISUtils i BSLoader s TTL převodníkem fungoval bezchybně. Další fáze tedy byla zapojnení samotného blouetooth modulu. Měla to být nejnadnější fáze, ale nebyla. Modul sice data z mobilu příjmal, ale displej byl hluchý, prostě nereagoval.
+Standartní komunikace na TTL linkách u pomaleších čipů bývá 9600 bit/s, U rychleších pak třeba 115200 bit/s. Vyzkoušel jsem všechny rychlosti a nic. Nezbylo nic jiného, než ze šupliku uprášit starý analyzátor a odposlechnout komunikaci s použitím opet převodníku USB na TTL. Jak je vidět na jednom z obrázku, ukázalo se, že displej komunikuje pouze s tímto nastavení sériového portu `1200 bit/s,7 bitů, sudá parita, 2 stopbyty`. 
+Aby bluetooth mobul HC-06 uměl s diplejem komunikovat, je třeba jej správně nastavit. Tento modul má celkém jednoduché nastavení, které se provádí pomocí AT příkazů.
+Pomocí převodníku USB nas TTL jsem provedl nastavení těmito příkazy:
+``
+AT+NAME=BS210-moje (nastavení názvu blouetooth zařízení)
+AT+PSWD=1111       (nastavení PINu pro spárování s mobilem)
+AT+UART=1200,2,2   (nastavené rychlosti portu, stopbyt a parity)
+
+Některé verze firmware potřebují tyto příkazy:
+AT+BAUD1           (nastavené rychlosti portu)
+AT+PE              (nastavení sudé parity)
+``
+
 ### Součastnost
-Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-06, který je modernější verzi staré HC-05, viz obr. vlevo. Bezdrátové moduly používají větčinou 3.3V logiku. K dipleji lze také připojit obyčejný TTL USB převodník s čipem Prolific 2303 nebo CH340, viz obr. vpravo. Tyto převodníky používají 5V logiku. S tímto převodníkem můžeme připojit displej přímo USB kabelem do PC, aniž bychom potřebovali další součástky. Je to nejsnadnější cesta jak komunikovat s displejem v kombinaci s programem BSLoader.exe
+Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-06, který je modernější verzi staré HC-05, viz obr. vlevo. Bezdrátové moduly používají větčinou 3.3V logiku. K dipleji lze také připojit obyčejný TTL USB převodník s čipem Prolific 2303 nebo CH340, viz obr. vpravo. Tyto převodníky používají 5V logiku. S tímto převodníkem můžeme připojit displej přímo USB kabelem do PC, aniž bychom potřebovali další součástky. Je to nejsnadnější cesta jak komunikovat s displejem v kombinaci s programem BSLoader.exe nebo IBISUtils.
 
 <p> </p>
   Ukázaka zapojení HC-06 k displeji:
@@ -57,8 +75,7 @@ Ukázka připojení bezdrátového modulu přímo na TTL sběrnici k procesoru d
 <img src="1710027836679.jpg"  align="middle"/>
 
 
-Ukázka TTL sběrnice displeje BS210 a komunikační LED, které signalizují tok dat Rx, Tx aj.
-![Sběrnice a komunikační LED na základní desce BS210:](1710027836691.jpg)
+
 
 
 
