@@ -51,6 +51,31 @@ Cílem tohoto projektu však není připojit displej k USB počítače bez slož
 ### Díl 2. - Minulost ve znamení komunikace
 Probram IBISUtils i BSLoader s TTL převodníkem fungoval bezchybně. Další fáze tedy byla zapojnení samotného blouetooth modulu. Měla to být nejnadnější fáze, ale nebyla. Modul sice data z mobilu příjmal, ale displej byl hluchý, prostě nereagoval.
 Standartní komunikace na TTL linkách u pomaleších čipů bývá 9600 bit/s, U rychleších pak třeba 115200 bit/s. Vyzkoušel jsem všechny rychlosti a nic. Nezbylo nic jiného, než ze šupliku uprášit starý analyzátor a odposlechnout komunikaci s použitím opet převodníku USB na TTL. Jak je vidět na jednom z obrázku, ukázalo se, že displej komunikuje pouze s tímto nastavení sériového portu `1200 bit/s,7 bitů, sudá parita, 2 stopbyty`. 
+
+Ukázka z IBISUtils a nastavení odeslání vlastního textu na displej:
+<img src="2024-03-19 083558.png"  hspace="20"/>
+
+Můj logický analyzér:
+<img src="1711095949288.jpg"  hspace="20"/>
+
+Zapojení logyckého analyzátoru komunikace TTL v nepájivém poli (na fotce je vidět i dělič napětí pro bluetooth modul sestavený z 3x 10kOhm):
+<img src="1711095949301.jpg"  hspace="20"/>
+
+Zobrazený text na displeji BS210:
+<img src="1711095949274.jpg"  hspace="20"/>
+
+Odposlech komunikace z aplikace IBISUtils v ASCII:
+
+* První řádek s nastavením 1200,8,N,1
+
+* Druhý řádek s nastavením 1200,7,N,1
+
+* Třetí řádek s nastavením 1200,7,N,2
+<img src="2024-03-19 083920.png"  hspace="20"/>
+Odposlech komunikace z aplikace IBISUtils v HEX:
+<img src="2024-03-19 084119.png" hspace="20"/>
+
+
 Aby bluetooth mobul HC-06 uměl s diplejem komunikovat, je třeba jej správně nastavit. Tento modul má celkém jednoduché nastavení, které se provádí pomocí AT příkazů.
 Na internetu existuje opravdu hodně ukázek, jak mobul HC-06 nebo HC-05 zapojit k Arduinu nebo TTL převodníku. Nechci zde suplovat aktualizované návody a tak uvádím jen příkazy.
 Pomocí převodníku USB nas TTL jsem provedl nastavení těmito příkazy:
