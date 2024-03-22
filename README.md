@@ -52,17 +52,24 @@ Cílem tohoto projektu však není připojit displej k USB počítače bez slož
 Probram IBISUtils i BSLoader s TTL převodníkem fungoval bezchybně. Další fáze tedy byla zapojnení samotného blouetooth modulu. Měla to být nejnadnější fáze, ale nebyla. Modul sice data z mobilu příjmal, ale displej byl hluchý, prostě nereagoval.
 Standartní komunikace na TTL linkách u pomaleších čipů bývá 9600 bit/s, U rychleších pak třeba 115200 bit/s. Vyzkoušel jsem všechny rychlosti a nic. Nezbylo nic jiného, než ze šupliku uprášit starý analyzátor a odposlechnout komunikaci s použitím opet převodníku USB na TTL. Jak je vidět na jednom z obrázku, ukázalo se, že displej komunikuje pouze s tímto nastavení sériového portu `1200 bit/s,7 bitů, sudá parita, 2 stopbyty`. 
 Aby bluetooth mobul HC-06 uměl s diplejem komunikovat, je třeba jej správně nastavit. Tento modul má celkém jednoduché nastavení, které se provádí pomocí AT příkazů.
+Na internetu existuje opravdu hodně ukázek, jak mobul HC-06 nebo HC-05 zapojit k Arduinu nebo TTL převodníku. Nechci zde suplovat aktualizované návody a tak uvádím jen příkazy.
 Pomocí převodníku USB nas TTL jsem provedl nastavení těmito příkazy:
-``
+```
 AT+NAME=BS210-moje (nastavení názvu blouetooth zařízení)
 AT+PSWD=1111       (nastavení PINu pro spárování s mobilem)
 AT+UART=1200,2,2   (nastavené rychlosti portu, stopbyt a parity)
-
-Některé verze firmware potřebují tyto příkazy:
-AT+BAUD1           (nastavené rychlosti portu)
+```
+Některé verze firmware reagují na tyto příkazy:
+```
+AT+NAME=BS210-moje (nastavení názvu blouetooth zařízení)
+AT+PSWD=1111       (nastavení PINu pro spárování s mobilem)
+AT+BAUD1           (nastavené rychlosti portu na 1200 bit/s)
 AT+PE              (nastavení sudé parity)
-``
-
+```
+Ověření údajů nastavení lze provést tímto příkazem, který vypíše aktuální nastavení:
+```
+AT+UART?
+```
 ### Součastnost
 Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-06, který je modernější verzi staré HC-05, viz obr. vlevo. Bezdrátové moduly používají větčinou 3.3V logiku. K dipleji lze také připojit obyčejný TTL USB převodník s čipem Prolific 2303 nebo CH340, viz obr. vpravo. Tyto převodníky používají 5V logiku. S tímto převodníkem můžeme připojit displej přímo USB kabelem do PC, aniž bychom potřebovali další součástky. Je to nejsnadnější cesta jak komunikovat s displejem v kombinaci s programem BSLoader.exe nebo IBISUtils.
 
