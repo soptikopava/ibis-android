@@ -30,7 +30,7 @@ Pro instalaci aplikace potřebujete zařízení se systémem Android verze 12 ne
 * Samozřejmě je to displej, který potřebujeme. V mém případě se jedná o displej BS210, který jsem zakoupil od kamaráda. Nejsem nadšenec do dopravy. Spíše jsem viděl příležitost si vyrobit něco geekovského, co nemá každý 😎
 * Bluetooth modul HC-06 nebo HC-05 (Já jsem použil HC-06.)
 * Displej je napájený zdrojem =24V, takže zdroj 24V/2A
-* Protože bluetooth modul používá logiku 3.3V a displej 5V, potřebujeme rezistory buď 3 kusy 10 kOhm, nebo 1 kus 10 kOhm + 1 kus 20 kOhm. Prostě takové, co najdete v šuplíku nejčastěji. Pomocí rezistorů vytvoříme dělič napětí a přizpůsobíme tak použitou logiku na správnou hodnotu.
+* Protože bluetooth modul používá logiku 3.3V a displej 5V, potřebujeme rezistory buď 3 kusy 10 kOhm, nebo 1 kus 1 kOhm + 1 kus 2 kOhm. Prostě takové, co najdete v šuplíku nejčastěji. Pomocí rezistorů vytvoříme dělič napětí a přizpůsobíme tak použitou logiku na správnou hodnotu.
 (Zde obrázek zapojení rezistorů jako dělič napětí.)
 ## Popis software
 V aplikaci lze vybrat Bluetooth zařízení, na které je pak možné poslat datovou větu (tzv. payload). Ten se tvoří z příkazu IBIS. Payload pak obsahuje na předposledním pozici symbol pro návratový vozík `CR` a kontrolní součet.
@@ -41,11 +41,11 @@ Dovolte mi trochu zabrousit do popisu, jak jsem na to přišel.
 ### Díl 1. - Minulost ve znamení TTL
 Abych zjistil, jak komunikace funguje, byl mi doporučen převodník z RS232 na IBIS, který používá 24V logiku HTL. HTL používá vždy dva signálové vodiče, kde každý z nich má vlastní oddělenou zem. Protože RS232 má obráceno logiku, proto musí mít převodník na HTL invertor, který obrací logickou  a převodník 1 na 0 a 0 na 1. Přišlo mi to až moc komplikované pro můj projekt. Proto jsem se rozhodl, že základní desku displeje prozkoumám podobněji. Zjistil jsem, že vstupy ze svorkovnice IBIS vedou na dělící člen, asi optočlen, který převádí 24V na nižší napětí a zároveň chrání další součástky proti přepětí. Bylo tedy jasné, že nejpravděpodobněji do procesoru bude přivedena logika TTL. S multimetrem jsem si ověřil, že se jedná o 5V logiku. Další součástka před procesorem je Schmittův obvod 74HC14D. Tento obvod zvyšuje napětí z dělících členů na logické úrovně 0V a 5V. Zároveň se snaží odstranit drobné rušení na vedení a skládá signál tak, aby měly logické 0 a 1 ostrou hranu a šly lépe rozpoznat. Při měření jsem našel na základní desce měřící body. Tyto body používají servisní technici, aby odhalili příčinu závady, když se jim na stůl dostane vadná deska. Využít tyto měřící body bylo více než příhodné. Vyhrabal jsem ze šuplíku převodník z USB na TTL Prolific PL2303 v ceně cca 35 Kč. A ejhle, fungovalo to jak s programem IBISUtil tak BSLoader.
 
-Ukázka TTL sběrnice displeje BS210 a komunikační LED, které signalizují tok dat Rx, Tx aj.
-![Sběrnice a komunikační LED na základní desce BS210:](1710027836691.jpg)
+Ukázka TTL sběrnice displeje BS2 a komunikační LED, které signalizují tok dat Rx, Tx aj.
+![Sběrnice a komunikační LED na základní desce BS2:](17027836691.jpg)
 <p> </p>
 Ukázka zapojení použitého převodníku TTL na USB přímo do PC:
-<img src="IMG_20240310_185015.jpg" width="300" align="middle"  hspace="20"/>
+<img src="IMG_202403_185015.jpg" width="300" align="middle"  hspace="20"/>
 
 Cílem tohoto projektu však není připojit displej k USB počítače bez složitých převodníků a kabelů. Cílem je ovládat displej bezdrátově skrze bluetooth v mobilu nebo tabletu.
 ### Díl 2. - Minulost ve znamení komunikace
@@ -56,9 +56,9 @@ Ukázka z IBISUtils a nastavení odeslání vlastního textu na displej:
 <img src="2024-03-19 083558.png"  hspace="20"/>
 
 Můj logický analyzér:
-<img src="1711095949288.jpg"  hspace="20"/>
+<img src="17195949288.jpg"  hspace="20"/>
 
-Zapojení logického analyzátoru komunikace TTL v nepájivém poli (na fotce je vidět i dělič napětí pro bluetooth modul sestavený z 3x 10kOhm):
+Zapojení logického analyzátoru komunikace TTL v nepájivém poli (na fotce je vidět i dělič napětí pro bluetooth modul sestavený z 3x 1kOhm):
 <img src="1711095949301.jpg"  hspace="20"/>
 
 Zobrazený text na displeji BS210:
