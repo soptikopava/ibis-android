@@ -94,10 +94,10 @@ Ověření údajů nastavení lze provést tímto příkazem, který vypíše ak
 ```
 AT+UART?
 ```
-> [!Není to tak jednoduché]
+> [!CAUTION]
 > V šuplíku jsem našel celkem tři bluetooth moduly: HC-05, HC-06 a JDY-31. Jak se však ukázalo, ani jeden neumí nastavit komunikaci na 2 stop byty. Modul HC-06 a JDY-31 navíc neumožňují komunikaci tak pomalou, jako je tolik potřebných 1200 bitů/s. Samotné moduly tedy lze použít jen s dalším doplňkem. Nyní jsem měl dvě možnosti: zakoupit něco jako Arduino s integrovaným BT modulem na desce, nebo použít staré Arduino UNO, které jsem měl v šuplíku. Rozhodl jsem se pro staré Arduino UNO, abych zbytečně neutrácel peníze a svému šuplíku i peněžence ulevil. Pokud musíte něco koupit, přidejte si do košíku raději Arduino s BT modulem v sobě.
 
-Úloha Arduina je převádět komunikaci z bluetooth modulu s nastavením 1200,8,N,0 na potřebnou 1200,7,N,2. Schéma zapojení vodičů:
+Úloha Arduina je převádět komunikaci z bluetooth modulu s nastavením 1200,8,N,0 na potřebnou 1200,7,E,2. Schéma zapojení vodičů:
 <img src="zapojenidesky.jpg" hspace="20"/>
 
 Pro Arduino UNO jsem použil tento primitivní kód:
