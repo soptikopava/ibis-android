@@ -30,7 +30,7 @@ Pro instalaci aplikace potřebujete zařízení se systémem Android verze 12 ne
 * Samozřejmě je to displej, který potřebujeme. V mém případě se jedná o displej BS210, který jsem zakoupil od kamaráda. Nejsem nadšenec do dopravy. Spíše jsem viděl příležitost si vyrobit něco geekovského, co nemá každý 😎
 * Bluetooth modul HC-06 nebo HC-05 (Já jsem použil HC-06.)
 * Displej je napájený zdrojem =24V, takže zdroj 24V/2A
-* Protože bluetooth modul používá logiku 3.3V a displej 5V, potřebujeme rezistory buď 3 kusy 10 kOhm, nebo 1 kus 1 kOhm + 1 kus 2 kOhm. Prostě takové, co najdete v šuplíku nejčastěji. Pomocí rezistorů vytvoříme dělič napětí a přizpůsobíme tak použitou logiku na správnou hodnotu.
+* Protože bluetooth modul používá logiku 3.3V a displej 5V, potřebujeme rezistory buď 3 kusy 1 kOhm, nebo 1 kus 1 kOhm + 1 kus 2 kOhm. Prostě takové, co najdete v šuplíku nejčastěji. Pomocí rezistorů vytvoříme dělič napětí a přizpůsobíme tak použitou logiku na správnou hodnotu.
 (Zde obrázek zapojení rezistorů jako dělič napětí.)
 ## Popis software
 V aplikaci lze vybrat Bluetooth zařízení, na které je pak možné poslat datovou větu (tzv. payload). Ten se tvoří z příkazu IBIS. Payload pak obsahuje na předposledním pozici symbol pro návratový vozík `CR` a kontrolní součet.
