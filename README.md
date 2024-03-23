@@ -82,19 +82,48 @@ Pomocí převodníku USB na TTL jsem provedl nastavení těmito příkazy:
 ```
 AT+NAME=BS210-moje (nastavení názvu blouetooth zařízení)
 AT+PSWD=1111       (nastavení PINu pro spárování s mobilem)
-AT+UART=1200,2,2   (nastavené rychlosti portu, stop byt a parity)
+AT+UART=1200,0,0   (nastavené rychlosti portu, stop byt a parity)
 ```
 Některé verze firmware reagují na tyto příkazy:
 ```
 AT+NAME=BS210-moje (nastavení názvu blouetooth zařízení)
 AT+PSWD=1111       (nastavení PINu pro spárování s mobilem)
 AT+BAUD1           (nastavené rychlosti portu na 1200 bit/s)
-AT+PE              (nastavení sudé parity)
 ```
 Ověření údajů nastavení lze provést tímto příkazem, který vypíše aktuální nastavení:
 ```
 AT+UART?
 ```
+> [!Není to tak jednoduché]
+> V šuplíku jsem našel celkem tři bluetooth moduly: HC-05, HC-06 a JDY-31. Jak se však ukázalo, ani jeden neumí nastavit komunikaci na 2 stop byty. Modul HC-06 a JDY-31 navíc neumožňují komunikaci tak pomalou, jako je tolik potřebných 1200 bitů/s. Samotné moduly tedy lze použít jen s dalším doplňkem. Nyní jsem měl dvě možnosti: zakoupit něco jako Arduino s integrovaným BT modulem na desce, nebo použít staré Arduino UNO, které jsem měl v šuplíku. Rozhodl jsem se pro staré Arduino UNO, abych zbytečně neutrácel peníze a svému šuplíku i peněžence ulevil. Pokud musíte něco koupit, přidejte si do košíku raději Arduino s BT modulem v sobě.
+
+Úloha Arduina je převádět komunikaci z bluetooth modulu s nastavením 1200,8,N,0 na potřebnou 1200,7,N,2. Schéma zapojení vodičů:
+<img src="zapojenidesky.jpg" hspace="20"/>
+
+Pro Arduino UNO jsem použil tento primitivní kód:
+```
+#include <SoftwareSerial.h>
+
+SoftwareSerial EEBlue(2, 3); // RX | TX
+
+void setup() {
+  Serial.begin(1200, SERIAL_7E2); // Nastaví sériovou komunikaci s rychlost 1200 b/s, 7 datovými bity, sudou paritou a 2 stop bity
+  EEBlue.begin(1200); // Nastaví komunikaci s Bluetooth modulem na rychlost 1200 b/s
+}
+
+void loop() {
+  // Přenáší data z Bluetooth modulu do terminálu
+  if (EEBlue.available()) {
+    Serial.write(EEBlue.read());
+  }
+
+  // Přenáší data z terminálu do Bluetooth modulu
+  if (Serial.available()) {
+    EEBlue.write(Serial.read());
+  }
+}
+```
+
 ### Současnost
 Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-06, který je modernější verzi staré HC-05, viz obr. vlevo. Bezdrátové moduly používají většinou 3.3V logiku. K dipleji lze také připojit obyčejný TTL USB převodník s čipem Prolific 2303 nebo CH340, viz obr. vpravo. Tyto převodníky používají 5V logiku. S tímto převodníkem můžeme připojit displej přímo USB kabelem do PC, aniž bychom potřebovali další součástky. Je to nejsnadnější cesta jak komunikovat s displejem v kombinaci s programem BSLoader.exe nebo IBISUtils.
 
