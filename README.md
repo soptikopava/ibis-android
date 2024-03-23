@@ -25,7 +25,7 @@ Zde se pokus popsat co nejpodrobněji celý projekt tak, abyste si jej mohli pos
 
 ## Požadavky
 ### Software 
-Pro instalaci aplikace potřebujete zařízení se systémem Android verze 12 nebo vyšší. Dobře poslouží jak tablet, tak mobil. Zařízení musí mít zapnuté Bluetooth. Komunikace s Bluetooth zahrnuje také váš souhlas ke zjišťování pozice. Toto je dáno požadavky Androidu. Android jsem zvolil, protože mi chyběla právě tato taková aplikace. Programů pro Windows je více, například německý IBISUtil nebo český BSLoader. Nepřišlo mi však praktické, abych kvůli každému nápisu musel rozbalovat a zapojovat svůj notebook. Mobil mám u sebe nejčastěji.
+Pro instalaci aplikace potřebujete zařízení se systémem Android verze 12 nebo vyšší. Dobře poslouží tablet i mobil. Zařízení musí mít zapnuté Bluetooth. Komunikace s Bluetooth zahrnuje také váš souhlas ke zjišťování pozice. Toto je dáno požadavky Androidu. Android jsem zvolil, protože mi chyběla právě tato taková aplikace. Programů pro Windows je více, například německý IBISUtil nebo český BSLoader. Nepřišlo mi však praktické, abych kvůli každému nápisu musel rozbalovat a zapojovat svůj notebook. Mobil mám u sebe nejčastěji.
 ### Hardware
 * Samozřejmě je to displej, který potřebujeme. V mém případě se jedná o displej BS210, který jsem zakoupil od kamaráda. Nejsem nadšenec do dopravy. Spíše jsem viděl příležitost si vyrobit něco geekovského, co nemá každý 😎
 * Bluetooth modul HC-06 nebo HC-05 (Já jsem použil HC-06.)
@@ -125,10 +125,12 @@ void loop() {
 ```
 
 ### Současnost
-Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-06, který je modernější verzi staré HC-05, viz obr. vlevo. Bezdrátové moduly používají většinou 3.3V logiku. K dipleji lze také připojit obyčejný TTL USB převodník s čipem Prolific 2303 nebo CH340, viz obr. vpravo. Tyto převodníky používají 5V logiku. S tímto převodníkem můžeme připojit displej přímo USB kabelem do PC, aniž bychom potřebovali další součástky. Je to nejsnadnější cesta jak komunikovat s displejem v kombinaci s programem BSLoader.exe nebo IBISUtils.
+Pro úpravu displeje BS210 jsem použil bezdrátový modul HC-05, viz obr. vlevo. Bezdrátové moduly používají většinou 3.3V logiku, proto je dobré vytvořit děliš něpětí pomocí rezistorů 1 kOhm a 2 kOhm (nebo 10 kOhm a 20 kOhm). Pro převod komunikace pro nastavení IBIS, zj. 1200 bit/s, 7 bytů, sudá parita a 2 stop bity, jsem použil Arduino Nano.
+> [!TIP]
+> K dipleji lze také připojit obyčejný TTL USB převodník s čipem Prolific 2303 nebo CH340, viz obr. vpravo. Tyto převodníky používají 5V logiku. S tímto převodníkem můžeme připojit displej přímo USB kabelem do PC, aniž bychom potřebovali další součástky. Je to nejsnadnější cesta jak komunikovat s displejem v kombinaci s programem BSLoader.exe nebo IBISUtils.
 
 <p> </p>
-  Ukázka zapojení HC-06 k displeji:
+  Ukázka zapojení HC-05 k displeji:
   <img src="1710027836666.jpg" width="300" align="middle"  hspace="20"/>
 
 <p> </p>
