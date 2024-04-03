@@ -24,6 +24,21 @@
         app:srcCompat="@drawable/maxresdefault"
         tools:ignore="HardcodedText" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hardwarová adresa BT zařízení:" />
+
+    <EditText
+        android:id="@+id/editTextAdresa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Bluetooth Address"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:text="00:00:00:00:00:00" />
+
     <Button
         android:id="@+id/buttonSelectDevice"
         android:layout_width="198dp"
@@ -53,12 +68,45 @@
         android:text="xC0"
         tools:ignore="HardcodedText" />
 
-    <Button
-        android:id="@+id/buttonVypocitej"
-        android:layout_width="202dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Vypočítat Payload"
-        tools:ignore="HardcodedText" />
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/toggleButtonF1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="false"
+            android:text="ToggleButton"
+            android:textOff="Font1" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonF2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="ToggleButton"
+            android:textOff="Font2" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonF3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="ToggleButton"
+            android:textOff="Font3" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonF4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="ToggleButton"
+            android:textOff="Font4" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/textViewPayload"
@@ -74,26 +122,10 @@
         android:layout_height="52dp"
         tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hardwarová adresa BT zařízení:" />
-
-    <EditText
-        android:id="@+id/editTextAdresa"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Bluetooth Address"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:text="00:00:00:00:00:00" />
-
     <Button
         android:id="@+id/buttonOdeslat"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:text="Odeslat na displej"
         tools:ignore="HardcodedText" />
 

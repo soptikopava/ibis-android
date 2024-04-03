@@ -31,8 +31,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         private const val REQUEST_ENABLE_BT = 1
         private const val REQUEST_BLUETOOTH_PERMISSIONS = 2
     }
-    lateinit var buttonVypocitej: Button
-    lateinit var buttonOdeslat: Button
     lateinit var prikaz: EditText
     lateinit var payloadTv: TextView
     private lateinit var adresa: EditText
@@ -42,15 +40,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        buttonVypocitej = findViewById(R.id.buttonVypocitej)
-        buttonVypocitej.setOnClickListener(this)
-        buttonOdeslat= findViewById(R.id.buttonOdeslat)
-        buttonOdeslat.setOnClickListener(this)
         prikaz = findViewById(R.id.editTextPrikaz)
         adresa = findViewById(R.id.editTextAdresa) // Inicializace nového pole pro adresu
 
         val buttonSelectDevice: Button = findViewById(R.id.buttonSelectDevice)
         buttonSelectDevice.setOnClickListener(this)
+
+        val buttonOdeslat = findViewById<Button>(R.id.buttonOdeslat)
+        buttonOdeslat.isEnabled = true
+        buttonOdeslat.setOnClickListener(this)
 
         enableEdgeToEdge()
 
@@ -72,8 +70,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Načtení hodnoty payloadu z SharedPreferences
         val savedPayload = sharedPref.getString("payload", "")
         payloadTv.text = savedPayload
-        buttonVypocitej.setOnClickListener(this)
-        buttonOdeslat.setOnClickListener(this)
 
         // Přidání posluchače změn v poli pro adresu
         adresa.addTextChangedListener(object : TextWatcher {
@@ -86,8 +82,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                // Zde sledujeme změny v poli a povolíme nebo zakážeme tlačítko "Odeslat na displej"
-                buttonOdeslat.isEnabled = s?.isNotBlank() == true
                 // Převedení adresy na velká písmena a odstranění mezer
                 val cleanedAddress = s?.toString()?.uppercase()?.replace(" ", "")
                 if (cleanedAddress != null && cleanedAddress != s.toString()) {
@@ -96,6 +90,37 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         })
+
+        // Přidání posluchače změn v poli pro EditText a TextView v layoutu
+        val editTextPrikaz: EditText = findViewById(R.id.editTextPrikaz)
+        val textViewPayload: TextView = findViewById(R.id.textPyload)
+
+        // Přidejte posluchače změn textu do EditText
+        editTextPrikaz.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                // Po změně textu vypočítej payload a nastavte ho do TextView
+                val payload = textToHex(s.toString())
+                textViewPayload.text = payload
+                // Uložení hodnoty editTextPrikaz do SharedPreferences
+                val sharedPref = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                editor.putString("prikaz", s.toString())
+                editor.apply()
+                // Uložení hodnoty payloadu do SharedPreferences
+                editor.putString("payload", payload)
+                editor.apply()
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // Nepotřebujeme implementovat
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                // Nepotřebujeme implementovat
+            }
+        })
+
+
         connectionStatus = findViewById(R.id.textViewConnectionStatus)
     }
     private fun initBluetoothManager() {
@@ -125,23 +150,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         Log.d("MainActivity", "onClick called")
         when (v?.id) {
-            R.id.buttonVypocitej -> {
-                val pr = prikaz
-                val hexResult = textToHex(pr.text.toString())
-                val payload = hexResult
-                payloadTv.text = payload
-                // Uložení hodnoty editTextPrikaz do SharedPreferences
-                val sharedPref = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-                val editor = sharedPref.edit()
-                editor.putString("prikaz", pr.text.toString())
-                editor.apply()
-                // Uložení hodnoty payloadu do SharedPreferences
-                editor.putString("payload", payload)
-                editor.apply()
-            }
             R.id.buttonOdeslat -> {
+                val buttonSelectDevice: Button = findViewById(R.id.buttonSelectDevice)
+                val buttonOdeslat = findViewById<Button>(R.id.buttonOdeslat)
+                buttonSelectDevice.isEnabled= false
+                buttonOdeslat.isEnabled = false
+
                 // Kontrola, zda je Bluetooth zařízení připojeno
                 if (bluetoothManager?.isConnected() == false) {
+                    connectionStatus.text = "Stav připojení: Připojování..."
                     initBluetoothManager() // Inicializace a pokus o připojení k Bluetooth zařízení
                 }
                 val payload = payloadTv.text.toString()
@@ -153,13 +170,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
 
                     if (bluetoothManager?.isConnected() == true) {
-                        bluetoothManager?.odeslatNaDisplej(payload)
                         connectionStatus.text = "Stav připojení: Připojeno"
                         connectionStatus.setTextColor(ContextCompat.getColor(this, R.color.green)) // Zelená barva pro "Připojeno"
+                        bluetoothManager?.odeslatNaDisplej(payload)
+                        connectionStatus.text = "Stav připojení: Odesláno"
                     } else {
                         Toast.makeText(this, "Bluetooth zařízení není připojeno.", Toast.LENGTH_SHORT).show()
                         connectionStatus.text = "Stav připojení: Nepřipojeno"
                         connectionStatus.setTextColor(ContextCompat.getColor(this, R.color.red)) // Červená barva pro "Nepřipojeno"
+                        bluetoothManager?.disconnect()
                     }
                 }
                 // Uložení hodnoty editTextAdresa do SharedPreferences
@@ -167,6 +186,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val editor = sharedPref.edit()
                 editor.putString("deviceAddress", adresa.text.toString())
                 editor.apply()
+                buttonSelectDevice.isEnabled = true
+                buttonOdeslat.isEnabled = true
             }
             R.id.buttonSelectDevice -> {
                 showBluetoothDevicePicker()
